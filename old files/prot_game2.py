@@ -37,7 +37,7 @@ def game():
 
         # draw the graph
     
-        x_vals = np.linspace(-resolution,resolution+50,scrx)
+        x_vals = np.linspace(-resolution,resolution,scrx)
         y_vals = f(x_vals)
 
         coords = []

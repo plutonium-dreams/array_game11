@@ -19,7 +19,6 @@ pygame.display.set_caption('Prototype Game')
 size = 10
        
 # p = (x,y)
-
 def point(p):
     pygame.draw.rect(window, 'white', ((p[0]-size/2,p[1]-size/2),(size,size)))
 
@@ -31,9 +30,20 @@ def project(p3d):
     point_3d = (p3d[0]/p3d[2], p3d[1]/p3d[2])
     return point_3d
 
+def translate_x(p3d, dx):
+    point_3d = (p3d[0] + dx, p3d[1], p3d[2])
+    return point_3d
+
 def translate_z(p3d, dz):
     point_3d = (p3d[0], p3d[1], p3d[2] + dz)
     return point_3d
+
+def translates(p3d, d, ax):
+    if ax == 'x':
+        translate_x(p3d,d)
+    else:
+        translate_z(p3d,d)
+
 
 def rotate_xz(p3d, angle):
     point_3d = (
@@ -42,6 +52,21 @@ def rotate_xz(p3d, angle):
         p3d[0]*math.sin(angle) + p3d[2]*math.cos(angle),
     )
     return point_3d
+
+def rotate_yz(p3d,angle):
+    point_3d = (
+        p3d[0],
+        p3d[1]*math.cos(angle) + p3d[2]*math.sin(angle),
+        -p3d[1]*math.sin(angle) + p3d[2]*math.cos(angle),
+    )
+    return point_3d
+
+def rotates(p3d, angle, ax):
+    if ax == 'xz':
+        return rotate_xz(p3d, angle)
+    if ax == 'yz':
+        return rotate_yz(p3d, angle)
+
 
 def line(p1, p2):
     pygame.draw.line(window, 'white', p1, p2)
@@ -58,6 +83,7 @@ vertices = [
     (0.5,-0.25,-0.25),
 
     (0.5,0.5,0.25),
+    (0.75,0.25,-0.25)
 ]
 
 faces = [
@@ -67,7 +93,8 @@ faces = [
     [1,5],
     [2,6],
     [3,7],
-    [7,8]
+    [7,8],
+    [8,9,0]
 ]
 
 
@@ -83,15 +110,15 @@ def game():
         
         # render vertices
         for v in vertices:
-            point(screen(project(translate_z(rotate_xz(v, angle),dz))))
+            point(screen(project(translates(rotate_xz(v, angle), dz, axe))))
 
         # render wireframe
-        for f in faces:
-            for i in range(len(f)):
-                a = vertices[f[i]]
-                b = vertices[f[(i+1)%len(f)]]
+        # for f in faces:
+        #     for i in range(len(f)):
+        #         a = vertices[f[i]]
+        #         b = vertices[f[(i+1)%len(f)]]
                 
-                line(screen(project(translate_z(rotate_xz(a, angle),dz))), screen(project(translate_z(rotate_xz(b, angle),dz))))
+        #         line(screen(project(translate_z(rotate_xz(a, angle),dz))), screen(project(translate_z(rotate_xz(b, angle),dz))))
 
         # dz += 1 * dt
 
@@ -106,27 +133,55 @@ def game():
                 pygame.quit()   
                 sys.exit()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    if rotate:
+                        rotate = 0
+                    else:
+                        rotate = 1
+                        axis = 'yz'
+                if event.key == pygame.K_s:
+                    if rotate:
+                        rotate = 0
+                    else:
+                        rotate = -1
+                        axis = 'yz'
                 if event.key == pygame.K_d:
                     if rotate:
                         rotate = 0
                     else:
                         rotate = 1
+                        axis = 'xz'
                 if event.key == pygame.K_a:
                     if rotate:
                         rotate = 0
                     else:
                         rotate = -1
+                        axis = 'xz'
                 
                 if event.key == pygame.K_j:
                     if zoom:
                         zoom = 0
                     else:
+                        zoom = 1
+                        axe = 'z'
+                if event.key == pygame.K_u:
+                    if zoom:
+                        zoom = 0
+                    else:
                         zoom = -1
-                if event.key == pygame.K_k:
+                        axe = 'z'
+                if event.key == pygame.K_h:
                     if zoom:
                         zoom = 0
                     else:
                         zoom = 1
+                        axe = 'x'
+                if event.key == pygame.K_k:
+                    if zoom:
+                        zoom = 0
+                    else:
+                        zoom = -1
+                        axe = 'x'
                     
 
 
