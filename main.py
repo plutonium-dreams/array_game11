@@ -43,9 +43,9 @@ def game():
     while True:
         window.fill(colors['bg'])
         
-        viewport.render(window)
         viewport.draw([])
-
+        viewport.render(window)
+    
         # if real time
         if (viewport.interval - pygame.time.get_ticks()) <= 0:
             viewport.interval = pygame.time.get_ticks() + interval
@@ -53,7 +53,7 @@ def game():
         
         ''' text printing '''
         com_name = text_main.render('DEATH CAPITAL',False, colors['main'])
-        window.blit(com_name, ((scrx-com_name.size[0])/2,scry*0.05))
+        window.blit(com_name, ((scrx-com_name.size[0])/2,viewport.pos[1]-50))
 
         window.blit(text_main.render(str(thing),False,colors['ui']))
 
