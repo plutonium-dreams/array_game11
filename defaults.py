@@ -1,4 +1,4 @@
-scrx, scry = (800,600)
+scrx, scry = (1000,700)
 interval = 1000
 outline_width = 3
 
