@@ -85,19 +85,26 @@ class Viewport():
         
         pygame.draw.lines(self.surface, colors['main'], False, points, width=3)
 
-        print(self.y_vals)
+        # print(self.y_vals)
     
     def scale_y(self, zom):
-        self.surface.fill(colors['bg'])        
-        if (self.max_val >= 0) and (self.max_val <= self.ciel):
-            self.max_val += (zom * self.ciel/100)
-            
-            self.zoom = self.height/self.max_val
-        elif self.max_val < 0 :
-            self.max_val = self.ciel/100
-        elif self.max_val > self.ciel:
-            self.max_val = self.ciel - self.ciel/100
 
+        # Occam's Razor 😮
+
+        # self.surface.fill(colors['bg'])        
+        # if (self.max_val >= 0) and (self.max_val <= self.ciel):
+        #     self.max_val += (zom * self.ciel/100)
+        #     self.zoom = self.height/self.max_val
+        #     print(1)
+        # elif self.max_val < 0 :
+        #     self.max_val = self.ciel/100
+        #     print(2)
+        # elif self.max_val > self.ciel:
+        #     self.max_val = self.ciel - self.ciel/100
+        #     print(3)
+        self.surface.fill(colors['bg'])        
+        self.max_val += (zom * self.ciel/100)
+        self.zoom = self.height/self.max_val
 
     def scale_x(self, zom):
         self.surface.fill(colors['bg'])
