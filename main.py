@@ -84,9 +84,9 @@ def game():
                     viewport.scale_y(10)
                 if event.key == pygame.K_k:
                     viewport.scale_y(-10)
-                if event.key == pygame.K_u:
+                if event.key == pygame.K_u and viewport.view_length != 5:
                     viewport.scale_x(-1)
-                if event.key == pygame.K_i:
+                if event.key == pygame.K_i and viewport.view_length != 51:
                     viewport.scale_x(1)
                 
 
