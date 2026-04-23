@@ -6,9 +6,10 @@ To do:
 [ ] implement the market system
     [/] moving graph
     [ ] add viewport utilities
-        [ ] zoom and shi
+        [/] zoom and shi
+        [ ] make it so that when you zoom in gadamo ang markers
     [ ] graph that moves according to principles of the stock market
-        [ ] the long-term and short-term factors
+        [ ] the long-term and short-term factorsk
 [ ] implement events into the game
     [ ] random events:
         [ ] war
@@ -54,9 +55,11 @@ def game():
         com_name = text_main.render('DEATH CAPITAL',False, colors['main'])
         window.blit(com_name, ((scrx-com_name.size[0])/2,scry*0.05))
 
-        window.blit(text_main.render(str(thing),False,colors['main']))
+        window.blit(text_main.render(str(thing),False,colors['ui']))
 
-        window.blit(text_viewui.render(f'Zoom: x{viewport.max_val}',False, colors['main']), ((scrx+viewport.width+100)/2, scry*0.2))
+        window.blit(text_viewui.render(f'Zoom: x{viewport.zoom}',False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.2))
+
+        window.blit(text_viewui.render(f'Number of points:{viewport.view_length}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1))
 
         
 
@@ -76,13 +79,19 @@ def game():
                     thing += 100
                 if event.key == pygame.K_a:
                     thing -= 100
+                
                 if event.key == pygame.K_j:
-                    viewport.scale(10)
+                    viewport.scale_y(10)
                 if event.key == pygame.K_k:
-                    viewport.scale(-10)
+                    viewport.scale_y(-10)
+                if event.key == pygame.K_u:
+                    viewport.scale_x(-1)
+                if event.key == pygame.K_i:
+                    viewport.scale_x(1)
                 
 
         pygame.display.update()
         pygame.clock.tick(60)
+        pygame.display.set_caption(f'BLACK MARKET {pygame.clock.get_fps()}')
 
 game()
