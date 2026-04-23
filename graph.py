@@ -3,6 +3,7 @@ import numpy as np
 import random
 from defaults import *
 from utils import *
+from market import *
 
 class Viewport():
     def __init__(self):
