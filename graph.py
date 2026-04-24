@@ -45,10 +45,16 @@ class Viewport():
         x_marker_surface = pygame.Surface((scrx/2+50, 50))
         for i in range(len(self.x_vals)):
             mark = text_viewui.render(f'{self.total_points-i}', False, colors['ui'])
-            if (10 < self.view_length <= 25) & (i%(2* len(str(self.view_length)))!=0):
+            if (10 < self.view_length <= 25) & (i%(2* len(str(self.view_length)))!=0) or (25 < self.view_length <= 52) & (i%(5* len(str(self.view_length)))!=0):
                 continue
-            elif (25 < self.view_length <= 52) & (i%(5* len(str(self.view_length)))!=0):
-                continue
+
+            # Will optimize more in the future
+
+            # if 10 < self.view_length <= 25 & i%(2* len(str(self.view_length)))!=0:
+            #     continue
+            # elif 25 < self.view_length <= 52 & i%(5* len(str(self.view_length)))!=0:
+            #     continue
+
             else:
                 x_marker_surface.blit(mark, (self.x_vals[-i-1]-mark.size[0]/2+25,10))
         surface.blit(x_marker_surface, (self.pos[0]-25,self.pos[1]+self.height))
@@ -79,31 +85,36 @@ class Viewport():
         
         pygame.draw.lines(self.surface, colors['main'], False, points, width=3)
 
-        
-        
-        
-
-        print(self.y_vals)
+        # print(self.y_vals)
     
     def scale_y(self, zom):
-        self.surface.fill(colors['bg'])        
-        if (self.max_val >= 0) and (self.max_val <= self.ciel):
-            self.max_val += (zom * self.ciel/100)
-            
-            self.zoom = self.height/self.max_val
-        elif self.max_val < 0 :
-            self.max_val = self.ciel/100
-        elif self.max_val > self.ciel:
-            self.max_val = self.ciel - self.ciel/100
 
+        # Occam's Razor 😮
+
+        # self.surface.fill(colors['bg'])        
+        # if (self.max_val >= 0) and (self.max_val <= self.ciel):
+        #     self.max_val += (zom * self.ciel/100)
+        #     self.zoom = self.height/self.max_val
+        #     print(1)
+        # elif self.max_val < 0 :
+        #     self.max_val = self.ciel/100
+        #     print(2)
+        # elif self.max_val > self.ciel:
+        #     self.max_val = self.ciel - self.ciel/100
+        #     print(3)
+        self.surface.fill(colors['bg'])        
+        self.max_val += (zom * self.ciel/100)
+        self.zoom = self.height/self.max_val
 
     def scale_x(self, zom):
-        ''' also needs optimization '''
         self.surface.fill(colors['bg'])
-        if 5 < self.view_length <= self.max_points:
-            self.view_length += zom
-        elif self.view_length > self.max_points:
-            self.view_length -= 1
-        elif (self.view_length == 5 and zom > 0):
-            self.view_length += zom
-        
+        self.view_length += zom
+
+        # Incorporated lapaw error catching conditionals into keybind conditionals instead
+
+        # if 5 < self.view_length < self.max_points:
+        #     self.view_length += zom
+        # elif self.view_length == 5 and zom > 0:
+        #     self.view_length += zom
+        # elif self.view_length == 51 and zom < 0:
+        #     self.view_length -= 1

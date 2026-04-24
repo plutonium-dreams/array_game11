@@ -57,7 +57,9 @@ def game():
 
         window.blit(text_main.render(str(thing),False,colors['ui']))
 
-        window.blit(text_viewui.render(f'Zoom: x{viewport.zoom}',False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.2))
+
+        # I thought making the in game zoom value be a whole number would be nice
+        window.blit(text_viewui.render(f'Zoom: x{(viewport.max_val-1000)/10000}',False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.2))
 
         window.blit(text_viewui.render(f'Number of points:{viewport.view_length}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1))
 
@@ -80,13 +82,16 @@ def game():
                 if event.key == pygame.K_a:
                     thing -= 100
                 
-                if event.key == pygame.K_j:
-                    viewport.scale_y(10)
-                if event.key == pygame.K_k:
+                # Corrected the keybinds for the zoom in zoom out of the y axis to match that of the x axis
+                # Also simplified the scale_y method
+
+                if event.key == pygame.K_j and viewport.max_val > 1000:
                     viewport.scale_y(-10)
-                if event.key == pygame.K_u:
+                if event.key == pygame.K_k and viewport.max_val < viewport.ciel:
+                    viewport.scale_y(10)
+                if event.key == pygame.K_u and viewport.view_length > 5:
                     viewport.scale_x(-1)
-                if event.key == pygame.K_i:
+                if event.key == pygame.K_i and viewport.view_length < 51:
                     viewport.scale_x(1)
                 
 
