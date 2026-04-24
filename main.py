@@ -77,6 +77,10 @@ def game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     pass
+                if event.key == pygame.K_w and viewport.follow:
+                    viewport.translate(1)
+                if event.key == pygame.K_s and viewport.follow:
+                    viewport.translate(-1)
                 if event.key == pygame.K_d:
                     thing += 100
                 if event.key == pygame.K_a:
@@ -93,6 +97,16 @@ def game():
                     viewport.scale_x(-1)
                 if event.key == pygame.K_i and viewport.view_length < 51:
                     viewport.scale_x(1)
+
+                if event.key == pygame.K_h:
+                    # you can move this code to the viewport class blueprint if you want to make this more organized
+                    if viewport.follow:
+                        viewport.translation = viewport.y_vals[-1]
+                        viewport.follow = False
+                        viewport.surface.fill(colors['bg'])
+                    else:
+                        viewport.follow = True
+                        viewport.surface.fill(colors['bg'])
                 
 
         pygame.display.update()

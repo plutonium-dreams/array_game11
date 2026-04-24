@@ -19,8 +19,9 @@ class Viewport():
         self.zoom = self.height/self.max_val
         self.interval = 0
         self.total_points = 0
+        self.translation = 0
+        self.follow = False
         
-
         self.y_vals = np.array([0 for i in range(self.max_points)])
         self.filter_y_vals = self.y_vals.copy()
         self.x_vals = np.linspace(0, int(self.width), len(self.y_vals))
@@ -28,7 +29,11 @@ class Viewport():
         
 
     def convert_point(self, point):
-        return self.height/2 - ((point-self.y_vals[-1]) * self.zoom)
+        if self.follow:
+            mode = self.translation
+        else:
+            mode = self.y_vals[-1]
+        return self.height/2 - ((point-mode) * self.zoom)
     
     def render(self, surface):
         surface.blit(self.surface, self.pos)
@@ -65,6 +70,7 @@ class Viewport():
         self.total_points +=1
         # the specific code that adds a new y value in the data set
         self.y_vals = np.append(self.y_vals, random.randrange(-self.ciel, int(self.ciel/10), int(self.ciel/1000)))
+        # self.y_vals = np.append(self.y_vals, self.ciel if (random.randint(0,1) == 0) else -self.ciel)
         # self.y_vals = np.append(self.y_vals, num)
       
         # maxes out the number of points to draw 
@@ -118,3 +124,7 @@ class Viewport():
         #     self.view_length += zom
         # elif self.view_length == 51 and zom < 0:
         #     self.view_length -= 1
+
+    def translate(self, val):
+        self.surface.fill(colors['bg'])
+        self.translation += val * (self.max_val)/10
