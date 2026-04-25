@@ -62,6 +62,8 @@ class Viewport():
         # can optimize
         strad = 10** len(str(abs(int(self.translation)))) if 10** len(str(abs(int(self.translation)))) != 10 else 1000
         # code makes it so that y translation lets you see more of the top and bottom of the screen if you scroll up down endlessly
+        # ^^^ this only works when the screen is following the graph
+        # make it work for when the screen is not following the graph also
 
         for i in range(-int(spread*(self.ciel)+strad), int(spread*(self.ciel)+strad), divs):
             mark = text_viewui.render(f'{i}', False, colors['ui'])

@@ -50,6 +50,7 @@ class Season():
 
 
 # Geometric Brownian Motion model
+''' would a monte carlo model be better? '''
 class Market():
     def __init__(self, initial_price):
         # time horizon has to be premade for this to work
