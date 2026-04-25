@@ -1,7 +1,14 @@
 '''
 Math 154 Final Project
-Black Market
+Group Mayad
 
+BLACK CAPITAL, INC.
+A social commentary
+
+Main Module
+Description: The main process of the game. Handles player input and pygame backend.
+
+NOTES
 To do:
 [ ] implement the market system
     [/] moving graph
@@ -33,23 +40,34 @@ window = pygame.display.set_mode((scrx, scry))
 pygame.clock = pygame.time.Clock()
 pygame.display.set_caption('BLACK MARKET')
 
-viewport = Viewport()
+np.random.seed(1)
 
+viewport = Viewport()
+market = Market(10)
 
 
 
 def game():
     thing  = 0
+    progress = 0
+
     while True:
         window.fill(colors['bg'])
         
-        viewport.draw([])
+        market.update()
+        
+        viewport.draw(colors['main'])
         viewport.render(window)
+
+
+        pygame.draw.rect(window, 'blue', pygame.Rect((scrx/2-100, scry-200),(200-progress,50)))
+        progress += 5
     
         # if real time
         if (viewport.interval - pygame.time.get_ticks()) <= 0:
             viewport.interval = pygame.time.get_ticks() + interval
-            viewport.update(thing)
+            viewport.update(market.gen_points())
+            progress = 0
         
         ''' text printing '''
         com_name = text_main.render('DEATH CAPITAL',False, colors['main'])
@@ -59,9 +77,14 @@ def game():
 
 
         # I thought making the in game zoom value be a whole number would be nice
-        window.blit(text_viewui.render(f'Zoom: x{(viewport.max_val-1000)/10000}',False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.2))
+        window.blit(text_viewui.render(f'Zoom: x{(viewport.max_val-100)/1000}',False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+50))
 
         window.blit(text_viewui.render(f'Number of points:{viewport.view_length}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1))
+
+        window.blit(text_viewui.render(f'GBM Model Values', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+125))
+        
+        window.blit(text_viewui.render(f'Drift (mu): {market.mu}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+150))
+        window.blit(text_viewui.render(f'Vol.(sigma): {market.sigma}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+175))
 
         
 
@@ -73,18 +96,25 @@ def game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()   
+                market.graph()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     pass
-                if event.key == pygame.K_w and viewport.follow:
+                if event.key == pygame.K_w and not viewport.not_follow:
                     viewport.translate(1)
-                if event.key == pygame.K_s and viewport.follow:
+                if event.key == pygame.K_s and not viewport.not_follow:
                     viewport.translate(-1)
+                
                 if event.key == pygame.K_d:
-                    thing += 100
+                    market.mu += 0.01
                 if event.key == pygame.K_a:
-                    thing -= 100
+                    market.mu -= 0.01
+                if event.key == pygame.K_e:
+                    market.sigma += 0.001
+                if event.key == pygame.K_q:
+                    market.sigma -= 0.001
+                
                 
                 # Corrected the keybinds for the zoom in zoom out of the y axis to match that of the x axis
                 # Also simplified the scale_y method
@@ -93,6 +123,8 @@ def game():
                     viewport.scale_y(-10)
                 if event.key == pygame.K_k and viewport.max_val < viewport.ciel:
                     viewport.scale_y(10)
+
+                ''' modify x_scale to account for 252 trading days '''
                 if event.key == pygame.K_u and viewport.view_length > 5:
                     viewport.scale_x(-1)
                 if event.key == pygame.K_i and viewport.view_length < 51:
@@ -100,13 +132,17 @@ def game():
 
                 if event.key == pygame.K_h:
                     # you can move this code to the viewport class blueprint if you want to make this more organized
-                    if viewport.follow:
+                    # add limits
+                    if viewport.not_follow:
                         viewport.translation = viewport.y_vals[-1]
-                        viewport.follow = False
+                        viewport.not_follow = False
                         viewport.surface.fill(colors['bg'])
                     else:
-                        viewport.follow = True
+                        viewport.not_follow = True
                         viewport.surface.fill(colors['bg'])
+                
+                if event.key == pygame.K_SPACE:
+                    print(market.output)
                 
 
         pygame.display.update()

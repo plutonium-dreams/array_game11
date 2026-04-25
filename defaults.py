@@ -1,3 +1,8 @@
+'''
+Defaults Module
+Description: For handling the default variables and data structures
+'''
+
 scrx, scry = (1000,700)
 interval = 1000
 outline_width = 3
