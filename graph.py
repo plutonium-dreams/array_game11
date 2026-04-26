@@ -53,8 +53,8 @@ class Viewport():
         y_marker_surface = pygame.Surface((100,scry/2+40))
         zoom = (self.view_height-100)/1000
         if zoom <= 0:
-            divs = int(self.max_view_height/1000)
-            spread = 0.25
+            divs = int(self.max_view_height/400)
+            spread = 0.55
         elif zoom == 1:
             divs = int(self.max_view_height/100)
             spread = 1
