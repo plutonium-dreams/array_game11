@@ -57,13 +57,13 @@ class Market():
 
         self.point = 0
 
-        self.time_horizon = 1260
+        self.time_horizon = 252     # 252 trading days in a year
         self.delta_t = 1
-        self.initial_price = initial_price
+        self.initial_price = initial_price / 100       # accounting for amplification
         self.output = np.array([self.initial_price])
         
-        self.mu = 0.05 / self.time_horizon
-        self.sigma = 0.01 # volatility
+        self.mu = 0.05 / self.time_horizon      # % annual yield
+        self.sigma = 0.01       # % volatility
 
         self.test = np.array([self.initial_price])
         
@@ -74,18 +74,17 @@ class Market():
     def gen_points(self):
         self.point = self.output[-1] * np.exp((self.mu - 0.5 * self.sigma ** 2) * self.delta_t + self.sigma * np.sqrt(self.delta_t) * np.random.normal(0,1))
         self.output = np.append(self.output, self.point)
-        return (self.point*100)//1
+        return (self.point*100)//1      # *100 amplifies the effect of the market
     
     def graph(self):
-        plt.plot(self.output)
+        plt.plot(self.output*100)
         plt.show()
 
 # np.random.seed(1)
-# for j in range(1):
-#     market = Market(100)
-#     for i in range(1260):
+# for j in range(100):
+#     market = Market(10)
+#     for i in range(252):
 #         market.gen_points()
-#     print((market.test*2)//1)
 #     market.graph()
 
 # plt.show()
