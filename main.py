@@ -15,17 +15,28 @@ To do:
     [ ] add viewport utilities
         [/] zoom and shi
         [ ] make it so that when you zoom in gadamo ang markers
-    [ ] graph that moves according to principles of the stock market
+    [/] graph that moves according to principles of the stock market
         [ ] the long-term and short-term factorsk
+[ ] implement player input
+    [ ] buy and sell mechanic
+    [ ] make the buy sell mechanic affect the stock market
 [ ] implement events into the game
+    [ ] implement a text engine in the game
     [ ] random events:
         [ ] war
         [ ] pandemic
         [ ] coup
         [ ] technology
+[ ] basic gameloop
+    [ ] return the seed from the random module so that pwede mareproduce ang states
+    [ ] player is able to bet on the stock market
+    [ ] events can happen + implementation of potential sources of infos
+[ ] add a title screen
 
-1 = 1 million
 
+currency in dollars?
+setting?
+time period?
 '''
 import pygame, random, os, sys
 import numpy as np 
@@ -33,6 +44,8 @@ import sympy as sp
 from defaults import *
 from utils import *
 from graph import *
+from trade import *
+from market import *
 
 pygame.init()
 
@@ -43,31 +56,49 @@ pygame.display.set_caption('BLACK MARKET')
 np.random.seed(1)
 
 viewport = Viewport()
-market = Market(1000)
 
 
+
+trade = Trade()
 
 def game():
     thing  = 0
     progress = 0
+    
+    bet = 0
+    
+    
+    level = 10000
+    money = 1000
+    shares = 0
+
+    market = Market(level)
 
     while True:
         window.fill(colors['bg'])
         
         market.update()
+    
+        trade.render(window)
         
         viewport.draw(colors['main'])
         viewport.render(window)
+        trade.update()                
 
 
-        pygame.draw.rect(window, 'blue', pygame.Rect((scrx/2-100, scry-200),(200-progress,50)))
-        progress += 5
+        pygame.draw.rect(window, colors['ui'], pygame.Rect(((scrx-viewport.width)/2-outline_width, scry/20),((viewport.interval - pygame.time.get_ticks())/(2*interval/1000),10)))
     
         # if real time
+        
         if (viewport.interval - pygame.time.get_ticks()) <= 0:
             viewport.interval = pygame.time.get_ticks() + interval
             viewport.update(market.gen_points())
-            progress = 0
+
+            # calculate new price of shares
+            shares *= viewport.processed_vals[-2]/viewport.processed_vals[-1]
+            shares = round(shares)
+            if shares < -bet:
+                bet = -shares
         
         ''' text printing '''
         com_name = text_main.render('DEATH CAPITAL',False, colors['main'])
@@ -77,26 +108,31 @@ def game():
 
 
         # I thought making the in game zoom value be a whole number would be nice
-        window.blit(text_viewui.render(f'Zoom: x{(viewport.view_height-100)/1000}',False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+50))
+        window.blit(text_viewui.render(f'Zoom: x{(viewport.view_height-100)/1000}',False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+50))
 
-        window.blit(text_viewui.render(f'Number of points:{viewport.view_length}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1))
+        window.blit(text_viewui.render(f'Number of points:{viewport.view_length}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1))
 
-        window.blit(text_viewui.render(f'GBM Model Values', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+125))
+        window.blit(text_viewui.render(f'GBM Model Values', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+125))
         
-        window.blit(text_viewui.render(f'Ann. Yield (mu): {market.mu*market.time_horizon}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+150))
-        window.blit(text_viewui.render(f'Vol.(sigma): {market.sigma}', False, colors['ui']), ((scrx+viewport.width+50)/2, scry*0.1+175))
+        window.blit(text_viewui.render(f'Ann. Yield (mu): {market.mu*market.time_horizon}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+150))
+        window.blit(text_viewui.render(f'Vol.(sigma): {market.sigma}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+175))
 
+        window.blit(text_viewui.render(f'Buy: {bet}' if bet>=0 else f'Sell: {-bet}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+225))
+
+        window.blit(text_viewui.render(f'Bank: ${money}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+250))
         
+        window.blit(text_viewui.render(f'Shares: ${shares}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+275))
 
-
-        
         # outline
         pygame.draw.rect(window,colors['main'],pygame.Rect(((scrx-viewport.width)/2-outline_width,scrx*0.1-outline_width),(viewport.width+2*outline_width,viewport.height+2*outline_width)),width=outline_width)
+        
+        pygame.draw.circle(window, 'white', (scrx/2,scry/2), 5)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()   
-                market.graph()
+                # market.graph()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -114,7 +150,6 @@ def game():
                     market.sigma += 0.001
                 if event.key == pygame.K_q:
                     market.sigma -= 0.001
-                
                 
                 # Corrected the keybinds for the zoom in zoom out of the y axis to match that of the x axis
                 # Also simplified the scale_y method
@@ -142,10 +177,36 @@ def game():
                         viewport.follow = True
                         viewport.surface.fill(colors['bg'])
                 
-                if event.key == pygame.K_SPACE:
-                    print(market.output)
-                
+                ''' trading controls '''
+                # fix buy and sell
+                if event.key == pygame.K_TAB:
+                    # add a way to make it switch between buy and sell
+                    pass
+                    
+                if event.key == pygame.K_EQUALS:
+                    bet += 100
+                if event.key == pygame.K_MINUS:
+                    # if -bet >= shares-100:
+                    #     bet = -np.round(shares,-len(str(shares)))
+                    if -bet < shares - 100:
+                        bet -= 100
+                    
+                if event.key == pygame.K_RETURN:
+                    market = Market(level + bet)
+                    level += bet
 
+                    if bet > 0:
+                        money -= bet
+                        shares += bet
+                    elif bet < 0:
+                        money -= bet
+                        shares += bet
+
+                
+                # if event.key == pygame.K_SPACE:
+                #     print(market.output)
+                
+        print(shares, bet)
         pygame.display.update()
         pygame.clock.tick(60)
         pygame.display.set_caption(f'BLACK MARKET {pygame.clock.get_fps()}')

@@ -1,6 +1,8 @@
 '''
 Graph Engine
 Description: Handles the graphing of the viewport. Points to be graphed are taken from the market engine.
+
+Needs polishing and optimization
 '''
 
 import pygame
@@ -8,7 +10,7 @@ import numpy as np
 import random
 from defaults import *
 from utils import *
-from market import *
+from trade import *
 
 class Viewport():
     def __init__(self):
@@ -21,6 +23,7 @@ class Viewport():
 
         self.max_view_length = 250
         self.view_length = 15
+        
         
         '''
         remaining to do for today
@@ -36,8 +39,7 @@ class Viewport():
         self.y_vals = np.array([0 for i in range(self.max_view_length)])
         self.filter_y_vals = self.y_vals.copy()
         self.x_vals = np.linspace(0, int(self.width), len(self.y_vals))
-
-        
+        self.processed_vals = 0
 
     def convert_point(self, point):
         if not self.follow:
@@ -80,14 +82,11 @@ class Viewport():
             zzz = len(str(abs(int(self.translation))))
             strad = 10**zzz if zzz > 2 else 1000
             yran = int(spread*(self.max_view_height)+strad)
-        print(yran, zzz)
-
-
 
         for i in range(-yran, yran, divs):
             mark = text_viewui.render(f'{i}', False, colors['ui'])
             y_marker_surface.blit(mark, (75-mark.size[0],self.convert_point(i)-mark.size[1]/2+20))
-        surface.blit(y_marker_surface, (self.pos[0]-100, self.pos[1]-20))
+        surface.blit(y_marker_surface, (self.surface.width+y_marker_surface.width+150, self.pos[1]-20))
 
         # render the x marker points
         ''' optimize this josef '''
@@ -147,8 +146,10 @@ class Viewport():
         self.x_vals = np.linspace(0, int(self.width), len(self.filter_y_vals))
 
         pygame.draw.line(self.surface, colors['ui'], (0, self.convert_point(self.height/2)), (self.width, self.convert_point(self.height/2)))
+
+        self.processed_vals = self.convert_point(self.filter_y_vals)
         
-        points = np.column_stack((self.x_vals, self.convert_point(self.filter_y_vals)))
+        points = np.column_stack((self.x_vals, self.processed_vals))
         
         pygame.draw.lines(self.surface, color, False, points, width=3)
 

@@ -39,7 +39,7 @@ class Trend():
         - strength on market
         - variations
         '''
-        self.a = a
+        self.a = 'a'
 
 class Season():
     def __init__(self, period, frequency, amplitude):
@@ -67,7 +67,6 @@ class Market():
 
         self.test = np.array([self.initial_price])
         
-
     def update(self):
         pass
 
@@ -79,6 +78,7 @@ class Market():
     def graph(self):
         plt.plot(self.output*100)
         plt.show()
+
 
 # np.random.seed(1)
 # for j in range(100):

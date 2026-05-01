@@ -10,5 +10,13 @@ outline_width = 3
 colors = {
     'main': 'red',
     'bg': 'black',
-    'ui': 'maroon'
+    'text': 'red4',
+    'ui': 'red3',
+    'button': 'red',
+    'button_pressed': 'black'
 }
+# colors = {
+#     'main': 'green',
+#     'bg': 'black',
+#     'ui': 'green4'
+# }
