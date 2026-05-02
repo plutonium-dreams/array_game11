@@ -62,7 +62,6 @@ class Season():
 
 
 # Geometric Brownian Motion model
-''' would a monte carlo model be better? '''
 class Market():
     def __init__(self, initial_price):
         # time horizon has to be premade for this to work
@@ -71,11 +70,11 @@ class Market():
 
         self.time_horizon = 252     # 252 trading days in a year
         self.delta_t = 1
-        self.initial_price = initial_price / 100       # accounting for amplification
+        self.initial_price = initial_price / 10       # accounting for amplification
         self.output = np.array([self.initial_price])
         
-        self.mu = 0.05 / self.time_horizon      # % annual yield
-        self.sigma = 0.01       # % volatility
+        self.mu = 0.15 / self.time_horizon      # % annual yield
+        self.sigma = 0.02       # % volatility
 
         self.test = np.array([self.initial_price])
         self.season=Season(period=63,amplitude=3*(10**-4))
@@ -95,16 +94,16 @@ class Market():
         new_mu=self.mu+add_seasonality
         self.point = self.output[-1] * np.exp((new_mu - 0.5 * self.sigma ** 2) * self.delta_t + self.sigma * np.sqrt(self.delta_t) * np.random.normal(0,1))
         self.output = np.append(self.output, self.point)
-        return (self.point*100)//1      # *100 amplifies the effect of the market
+        return (self.point*10)//1      # *100 amplifies the effect of the market
     
     def graph(self):
-        plt.plot(self.output*100)
-        plt.show()
+        plt.plot(self.output*10)
+        # plt.show()
 
 
 # np.random.seed(1)
 # for j in range(100):
-#     market = Market(10)
+#     market = Market(1000)
 #     for i in range(252):
 #         market.gen_points()
 #     market.graph()

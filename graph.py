@@ -15,7 +15,7 @@ from trade import *
 class Viewport():
     def __init__(self):
         self.width, self.height = scrx/2,scry/2
-        self.pos=((scrx-self.width)/2,scrx*0.1)
+        self.pos=((scrx-self.width)/2-150,scrx*0.1)
         self.surface = pygame.Surface((self.width, self.height))
         
         self.max_view_height = 10**4
@@ -53,6 +53,7 @@ class Viewport():
 
         # render the y marker points
         y_marker_surface = pygame.Surface((100,scry/2+40))
+        y_marker_surface.fill(colors['bg'])
         zoom = (self.view_height-100)/1000
         if zoom <= 0:
             divs = int(self.max_view_height/400)
@@ -86,12 +87,13 @@ class Viewport():
         for i in range(-yran, yran, divs):
             mark = text_viewui.render(f'{i}', False, colors['ui'])
             y_marker_surface.blit(mark, (75-mark.size[0],self.convert_point(i)-mark.size[1]/2+20))
-        surface.blit(y_marker_surface, (self.surface.width+y_marker_surface.width+150, self.pos[1]-20))
+        surface.blit(y_marker_surface, (self.surface.width+self.pos[0], self.pos[1]-20))
 
         # render the x marker points
         ''' optimize this josef '''
         
         x_marker_surface = pygame.Surface((scrx/2+50, 50))
+        x_marker_surface.fill(colors['bg'])
         
         # tried to implement one that works like the y scaling but i keep on messing it up
         # for i in range(-int(self.view_length/2), int(self.view_length/2)):

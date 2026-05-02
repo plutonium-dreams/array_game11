@@ -33,6 +33,8 @@ To do:
     [ ] events can happen + implementation of potential sources of infos
 [ ] add a title screen
 
+CLEAN UP THE TRADING FUNCTIONALITY
+
 
 currency in dollars?
 setting?
@@ -53,90 +55,68 @@ window = pygame.display.set_mode((scrx, scry))
 pygame.clock = pygame.time.Clock()
 pygame.display.set_caption('BLACK MARKET')
 
-np.random.seed(1)
+# for testing purposes
+SEED = np.random.randint(0,1000000)
+np.random.seed(SEED)
+# np.random.seed(266007)
+print(f'GAME SEED: {SEED}')
 
 viewport = Viewport()
 
-
-
-trade = Trade()
-
+trade = Trade(money)
+market = Market(1000)
 def game():
-    thing  = 0
-    progress = 0
-    
-    bet = 0
-    
-    
-    level = 10000
-    money = 1000
-    shares = 0
+    ''' hodgepodge of local variables to be cleaned up later '''
+    debug_state = False         # ctrl + d
+    boundaries_state = False    # ctrl + b
 
-    market = Market(level)
-
+    # add a pause function
+    
     while True:
         window.fill(colors['bg'])
         
         market.update()
     
         trade.render(window)
-        
+
         viewport.draw(colors['main'])
         viewport.render(window)
-        trade.update()                
 
+        trade.update(viewport.y_vals[-1])
+                       
 
-        pygame.draw.rect(window, colors['ui'], pygame.Rect(((scrx-viewport.width)/2-outline_width, scry/20),((viewport.interval - pygame.time.get_ticks())/(2*interval/1000),10)))
+        # time bar
+        pygame.draw.rect(window, colors['ui'], pygame.Rect((viewport.pos[0], scry/20),((viewport.interval - pygame.time.get_ticks())/(2*interval/1000),10)))
     
-        # if real time
-        
         if (viewport.interval - pygame.time.get_ticks()) <= 0:
             viewport.interval = pygame.time.get_ticks() + interval
             viewport.update(market.gen_points())
 
             # calculate new price of shares
-            shares *= viewport.processed_vals[-2]/viewport.processed_vals[-1]
-            shares = round(shares)
-            if shares < -bet:
-                bet = -shares
-        
+            # trade.value *= viewport.processed_vals[-2]/viewport.processed_vals[-1]
+            # trade.value = round(trade.value)
+
         ''' text printing '''
-        com_name = text_main.render('DEATH CAPITAL',False, colors['main'])
-        window.blit(com_name, ((scrx-com_name.size[0])/2,viewport.pos[1]-50))
+        com_name = text_main.render('DEATH CAPITAL, INC.',False, colors['main'])
+        window.blit(com_name, (viewport.pos[0],viewport.pos[1]-50))
 
-        window.blit(text_main.render(str(thing),False,colors['ui']))
-
-
-        # I thought making the in game zoom value be a whole number would be nice
-        window.blit(text_viewui.render(f'Zoom: x{(viewport.view_height-100)/1000}',False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+50))
-
-        window.blit(text_viewui.render(f'Number of points:{viewport.view_length}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1))
-
-        window.blit(text_viewui.render(f'GBM Model Values', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+125))
+        ''' debug tools '''
+        show_boundaries(boundaries_state, window, viewport)
+        debug_menu(debug_state, window, viewport, market)
         
-        window.blit(text_viewui.render(f'Ann. Yield (mu): {market.mu*market.time_horizon}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+150))
-        window.blit(text_viewui.render(f'Vol.(sigma): {market.sigma}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+175))
-
-        window.blit(text_viewui.render(f'Buy: {bet}' if bet>=0 else f'Sell: {-bet}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+225))
-
-        window.blit(text_viewui.render(f'Bank: ${money}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+250))
-        
-        window.blit(text_viewui.render(f'Shares: ${shares}', False, colors['ui']), (scrx/2-viewport.width+25, scry*0.1+275))
 
         # outline
-        pygame.draw.rect(window,colors['main'],pygame.Rect(((scrx-viewport.width)/2-outline_width,scrx*0.1-outline_width),(viewport.width+2*outline_width,viewport.height+2*outline_width)),width=outline_width)
+        pygame.draw.rect(window,colors['main'],pygame.Rect((viewport.pos[0]-outline_width,viewport.pos[1]-outline_width),(viewport.width+2*outline_width,viewport.height+2*outline_width)),width=outline_width) 
         
-        pygame.draw.circle(window, 'white', (scrx/2,scry/2), 5)
+
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()   
-                # market.graph()
+                market.graph()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    pass
                 if event.key == pygame.K_w and not viewport.follow:
                     viewport.translate(1)
                 if event.key == pygame.K_s and not viewport.follow:
@@ -182,31 +162,24 @@ def game():
                 if event.key == pygame.K_TAB:
                     # add a way to make it switch between buy and sell
                     pass
-                    
-                if event.key == pygame.K_EQUALS:
-                    bet += 100
-                if event.key == pygame.K_MINUS:
-                    # if -bet >= shares-100:
-                    #     bet = -np.round(shares,-len(str(shares)))
-                    if -bet < shares - 100:
-                        bet -= 100
-                    
-                if event.key == pygame.K_RETURN:
-                    market = Market(level + bet)
-                    level += bet
 
-                    if bet > 0:
-                        money -= bet
-                        shares += bet
-                    elif bet < 0:
-                        money -= bet
-                        shares += bet
+                if event.key == pygame.K_SPACE:
+                    time_stop = True
 
+                # debug tools
+                if (event.mod & pygame.KMOD_LCTRL) and (event.key == pygame.K_d):
+                    if not debug_state:
+                        debug_state = True
+                    else:
+                        debug_state = False
+                if (event.mod & pygame.KMOD_LCTRL) and (event.key == pygame.K_b):
+                    if not boundaries_state:
+                        boundaries_state = True
+                    else:
+                        boundaries_state = False
+                    
+                    
                 
-                # if event.key == pygame.K_SPACE:
-                #     print(market.output)
-                
-        print(shares, bet)
         pygame.display.update()
         pygame.clock.tick(60)
         pygame.display.set_caption(f'BLACK MARKET {pygame.clock.get_fps()}')
