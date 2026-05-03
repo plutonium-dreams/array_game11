@@ -73,7 +73,7 @@ class Market():
         self.initial_price = initial_price / 10       # accounting for amplification
         self.output = np.array([self.initial_price])
         
-        self.mu = 0.15 / self.time_horizon      # % annual yield
+        self.mu = 0.20 / self.time_horizon      # % annual yield
         self.sigma = 0.02       # % volatility
 
         self.test = np.array([self.initial_price])

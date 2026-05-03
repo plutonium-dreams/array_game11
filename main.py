@@ -16,9 +16,9 @@ To do:
         [/] zoom and shi
         [ ] make it so that when you zoom in gadamo ang markers
     [/] graph that moves according to principles of the stock market
-        [ ] the long-term and short-term factorsk
-[ ] implement player input
-    [ ] buy and sell mechanic
+        [/] the long-term and short-term factorsk
+[/] implement player input
+    [/] buy and sell mechanic
     [ ] make the buy sell mechanic affect the stock market
 [ ] implement events into the game
     [ ] implement a text engine in the game
@@ -28,8 +28,8 @@ To do:
         [ ] coup
         [ ] technology
 [ ] basic gameloop
-    [ ] return the seed from the random module so that pwede mareproduce ang states
-    [ ] player is able to bet on the stock market
+    [/] return the seed from the random module so that pwede mareproduce ang states
+    [/] player is able to bet on the stock market
     [ ] events can happen + implementation of potential sources of infos
 [ ] add a title screen
 
@@ -158,11 +158,9 @@ def game():
                         viewport.surface.fill(colors['bg'])
                 
                 ''' trading controls '''
-                # fix buy and sell
-                if event.key == pygame.K_TAB:
-                    # add a way to make it switch between buy and sell
-                    pass
+                # add trading controls
 
+                ''' time controls '''
                 if event.key == pygame.K_SPACE:
                     time_stop = True
 
