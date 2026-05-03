@@ -22,23 +22,11 @@ To do:
     [ ] make the buy sell mechanic affect the stock market
 [ ] implement events into the game
     [ ] implement a text engine in the game
-    [ ] random events:
-        [ ] war
-        [ ] pandemic
-        [ ] coup
-        [ ] technology
 [ ] basic gameloop
     [/] return the seed from the random module so that pwede mareproduce ang states
     [/] player is able to bet on the stock market
     [ ] events can happen + implementation of potential sources of infos
 [ ] add a title screen
-
-CLEAN UP THE TRADING FUNCTIONALITY
-
-
-currency in dollars?
-setting?
-time period?
 '''
 import pygame, random, os, sys
 import numpy as np 
@@ -62,9 +50,9 @@ np.random.seed(SEED)
 print(f'GAME SEED: {SEED}')
 
 viewport = Viewport()
-
 trade = Trade(money)
 market = Market(1000)
+newsbox = NewsBox((60,viewport.pos[1]+viewport.height+45),(630,145))
 def game():
     ''' hodgepodge of local variables to be cleaned up later '''
     debug_state = False         # ctrl + d
@@ -76,13 +64,15 @@ def game():
         window.fill(colors['bg'])
         
         market.update()
-    
+        trade.update(viewport.y_vals[-1])
+        newsbox.update()
+        
         trade.render(window)
-
         viewport.draw(colors['main'])
         viewport.render(window)
+        newsbox.render(window)
 
-        trade.update(viewport.y_vals[-1])
+        
                        
 
         # time bar

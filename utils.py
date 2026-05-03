@@ -5,6 +5,8 @@ Description: For handling the back-end functions and utilities
 from pygame.font import Font
 
 import pygame, os
+import numpy as np
+
 from defaults import *
 
 pygame.init()
@@ -51,7 +53,7 @@ def show_boundaries(state, window, viewport):
         # right partition
         pygame.draw.line(window, 'fuchsia', (viewport.surface.width+viewport.pos[0]+100,scry/20+15), (viewport.surface.width+viewport.pos[0]+100,scry-50))
         # bottom right partition
-        pygame.draw.line(window, 'fuchsia', (viewport.surface.width+viewport.pos[0]+100,scry/2), (scrx-50,scry/2))
+        pygame.draw.line(window, 'fuchsia', (viewport.surface.width+viewport.pos[0]+100,305), (scrx-50,305))
 
     else:
         pass
@@ -90,4 +92,35 @@ class Button():
                 self.color = colors['button']
                 self.state = False
 
-            
+class TextBox():
+    def __init__(self, pos, size):
+        self.pos = np.array(pos)
+        self.surface = pygame.Surface(size)
+        self.buttons = []
+        # self.rect = pygame.Rect(pos,size)
+        
+
+    def render(self,window):
+        self.surface.fill(colors['bg_light'])
+        window.blit(self.surface, self.pos)
+        
+        for button in self.buttons:
+            button.render(window)
+        
+        
+
+    def update(self):
+        for button in self.buttons:
+            button.update()
+        pass
+
+
+
+class NewsBox(TextBox):
+    def __init__(self, pos, size):
+        TextBox.__init__(self, pos, size)
+        
+        # button initialize
+        self.button_more = Button(self.pos+np.array([50,25]), (100,50), 'More', 'click')
+
+        self.buttons.extend([self.button_more])
