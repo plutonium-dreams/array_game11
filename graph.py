@@ -24,7 +24,6 @@ class Viewport():
         self.max_view_length = 251
         self.view_length = 11
         
-        
         '''
         remaining to do for today
         -   modify max view length to be max 252; adjust the viewport naming for that also
@@ -70,7 +69,7 @@ class Viewport():
         elif zoom >= 5:
             divs = int(self.max_view_height/10)
             spread = 2
-
+        # print(self.view_height, zoom)
         # code makes it so that y translation lets you see more of the top and bottom of the screen if you scroll up down endlessly
         '''
         Issue: dont make strad increase exponentially because it makes the program lag af
@@ -94,15 +93,6 @@ class Viewport():
         
         x_marker_surface = pygame.Surface((scrx/2+50, 50))
         x_marker_surface.fill(colors['bg'])
-        
-        # tried to implement one that works like the y scaling but i keep on messing it up
-        # for i in range(-int(self.view_length/2), int(self.view_length/2)):
-        #     mark = text_viewui.render(f'{self.total_points-i}', False, colors['ui'])
-        #       
-        #                             vvv modifies which position to place each number
-        #     x_marker_surface.blit(mark,(self.x_vals[-i-1+int(self.view_length/2)]-mark.size[0]/2+25,10))
-        # surface.blit(x_marker_surface, (self.pos[0]-25,self.pos[1]+self.height))
-
     
         for i in range(0, len(self.x_vals), len(self.x_vals)//10):
             # add a big view / small view approach maybe?            
@@ -119,16 +109,10 @@ class Viewport():
         self.total_points +=1
         # the specific code that adds a new y value in the data set
 
-        # random
-        # self.y_vals = np.append(self.y_vals, random.randrange(-self.max_view_height, int(self.max_view_height/10), int(self.max_view_height/1000)))
-        # self.y_vals = np.append(self.y_vals, self.max_view_height if (random.randint(0,1) == 0) else -self.max_view_height)
-
         # from market
         self.y_vals = np.append(self.y_vals, num)
       
-        # maxes out the number of points to draw 
-        # if len(self.y_vals) >= self.max_amt:
-        #     self.y_vals = self.y_vals[:-(self.max_amt+1):-1][::-1]
+        # maxes out the number of points to draw
         if len(self.y_vals) >= self.max_view_length:
             self.y_vals = self.y_vals[:-(self.max_view_length+1):-1][::-1]        
 
@@ -147,8 +131,6 @@ class Viewport():
         points = np.column_stack((self.x_vals, self.processed_vals))
         
         pygame.draw.lines(self.surface, color, False, points, width=3)
-
-        # print(self.y_vals)
     
     def scale_y(self, zom):
         self.surface.fill(colors['bg'])        

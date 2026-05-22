@@ -31,8 +31,6 @@ window = pygame.display.set_mode((scrx, scry))
 pygame.clock = pygame.time.Clock()
 pygame.display.set_caption('DEATH CAPITAL, INC.')
 
-
-
 viewport = Viewport()
 trade = Trade(money)
 market = Market(1000)
@@ -149,9 +147,7 @@ def truebad_end():
 
         if not pygame.mixer.music.get_busy():
             shut_down()
-        
 
-        
         # add credits scene here
         credits(window,'white',end_y)
         end_y +=0.5
@@ -176,8 +172,6 @@ def truebad_end():
                 if event.key == pygame.K_d:
                     rotate *= -1
 
-
-
         pygame.display.update()
         pygame.clock.tick(60)
         pygame.display.set_caption(f'DEATH CAPITAL, INC.      |      (FPS):{round(pygame.clock.get_fps())}')
@@ -194,10 +188,6 @@ def bad_end():
     end_y = 0
     while True:
         window.fill(colors['bg'])
-
-        # add credits scene here
-        # text = text_main.render('True Bad End\nDeath Capital Inc.\na Math 154 Final Project by Group Mayad',False,'white')
-        # window.blit(text, (scrx/2-text.width/2,scry/2-text.height/2))
 
         credits(window,colors['main'],end_y)
         end_y+=0.5
@@ -219,11 +209,11 @@ def game():
     Main Game Function
     Description: Handles the main game, calling on pygame backend updates and user input.
     '''
-    # for testing purposes
+
     SEED = np.random.randint(0,1000000)
     np.random.seed(SEED)
-    # SEED = np.random.seed(921731)
-    print(f'GAME SEED: {SEED}')
+
+    # print(f'GAME SEED: {SEED}')
 
 
     debug_state = False         # ctrl + d
@@ -242,17 +232,14 @@ def game():
 
         # events here happen every update
         if not paused and (viewport.interval - pygame.time.get_ticks()) <= 0:
-            # update the viewport
             
             viewport.interval = pygame.time.get_ticks() + interval
             viewport.update(market.gen_points())
             
-            
-            
             phenomena.day+=1
             occurence = phenomena.select()
             phenomena.update()
-            print(market.mu, phenomena.market.mu, phenomena.regular_mu)
+            # print(market.mu, phenomena.market.mu, phenomena.regular_mu)
             updateCSV()
 
         trade.render(window)
@@ -294,11 +281,10 @@ def game():
         show_boundaries(boundaries_state, window, viewport)
         debug_menu(debug_state, window, viewport, market)
         
-
         # outline
         pygame.draw.rect(window,colors['main'],pygame.Rect((viewport.pos[0]-outline_width,viewport.pos[1]-outline_width),(viewport.width+2*outline_width,viewport.height+2*outline_width)),width=outline_width) 
         
-        newsbox.render(window)      # has to come after the outline drawing
+        newsbox.render(window)     
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -314,24 +300,14 @@ def game():
                     viewport.scale_y(-10)
                 if event.key == pygame.K_k and viewport.view_height < viewport.max_view_height:
                     viewport.scale_y(10)
-                # if event.key == pygame.K_j and viewport.view_height > 100:
-                #     viewport.scale_y(-1)
-                # if event.key == pygame.K_k and viewport.view_height < viewport.max_view_height:
-                #     viewport.scale_y(1)
 
                 ''' modify x_scale to account for 252 trading days '''
-                # if event.key == pygame.K_u and viewport.view_length > 5:
-                #     viewport.scale_x(-5)
-                # if event.key == pygame.K_i and viewport.view_length < viewport.max_view_length:
-                #     viewport.scale_x(5)
                 if event.key == pygame.K_u and viewport.view_length > 11    :
                     viewport.scale_x(-10)
                 if event.key == pygame.K_i and viewport.view_length < viewport.max_view_length:
                     viewport.scale_x(10)
 
                 if event.key == pygame.K_h:
-                    # you can move this code to the viewport class blueprint if you want to make this more organized
-                    # add limits
                     if viewport.follow:
                         viewport.translation = viewport.y_vals[-1]
                         viewport.follow = False
@@ -339,9 +315,6 @@ def game():
                     else:
                         viewport.follow = True
                         viewport.surface.fill(colors['bg'])
-                
-                ''' trading controls '''
-                # add trading controls
                 
                 ''' time controls '''
                 if event.key == pygame.K_SPACE:
@@ -363,12 +336,9 @@ def game():
                         boundaries_state = False
                 if event.key == pygame.K_BACKSLASH:
                     print(phenomena.weights)
-                    
-                    
-                
+        
         pygame.display.update()
         pygame.clock.tick(60)
         pygame.display.set_caption(f'DEATH CAPITAL, INC.      |      (FPS):{round(pygame.clock.get_fps())}')
 
-# game()
 start()

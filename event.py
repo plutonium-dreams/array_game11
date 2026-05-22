@@ -167,9 +167,7 @@ class Event():
         if self.day > 1260 and self.sin==False and (self.lock==0 or self.lock==3):
             self.lock = 3
             self.events[7,2] = 100000000
-            
-            
-        # elif self.day > 0  and self.trade.balance 
+        
 
 
         for evnt in self.event_list:
@@ -180,15 +178,11 @@ class Event():
                     self.invoke(evnt[0],evnt[1])
 
                 evnt[1] -= 1
-        print(self.event_list)
-
-
-
-
+        # print(self.event_list)
 
     ''' events framework '''
     def invoke(self, num, remaining, decision=None):
-        print(num)
+        # print(num)
         match num:
             case 0:
                 pass
@@ -347,8 +341,6 @@ class Event():
             self.market.sigma = self.regular_sigma + 0.00015
             self.market.mu = self.regular_mu + 0.00001
 
-            # self.market.sigma += 0.003
-            # self.market.mu += ((self.market.mu)/(remaining*100))*1.01
             if remaining <= 0:
                 self.market.mu = self.regular_mu
                 self.market.sigma = self.regular_sigma

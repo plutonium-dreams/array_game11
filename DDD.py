@@ -22,7 +22,6 @@ size = 25
 # p = (x,y)
 def point(p,color,surf):
     pygame.draw.rect(surf, (color[0],color[1],color[2]), ((p[0]-size/2,p[1]-size/2),(size,size)))
-    # pygame.draw.circle(window, (color[0],color[1],color[2]), (p[0]-size/2,p[1]-size/2),size)
 
 def screen(p):
     point = ((p[0] + 1)/2 * scrx, (1-(p[1] + 1)/2) * scry)
@@ -63,9 +62,6 @@ def rotate_yz(p3d,angle):
 def line(p1, p2,surf):
     pygame.draw.line(surf, 'white', p1, p2)
 
-# vertices = []
-
-# faces = []
 dt = 1/60
 dz = 0.01
 angle = 0
@@ -82,18 +78,7 @@ def render(surf,zoom,rotate):
 
     # render vertices
     for v in vertices:
-        # point(screen(project(translate_z(rotate_xz(v, angle),dz))),[255,255,255], surf)
         point(screen(project(translate_z(rotate_xz(v, angle),dz))),[abs(v[0]*255),abs(v[1]*255),abs(v[2]*255)],surf)
-
-    # for f in faces:
-    #     for i in range(len(f)):
-    #         # print(f)
-    #         a = vertices[f[i]]
-    #         b = vertices[f[(i+1)%len(f)]]
-            
-    #         line(screen(project(translate_z(rotate_xz(a, angle),dz))), screen(project(translate_z(rotate_xz(b, angle),dz))),surf)
-
-    # dz += 1 * dt
 
     if rotate:
         angle += math.pi * dt * rotate/10
@@ -111,15 +96,11 @@ def game():
     global rotate
     global zoom
     i = 0
-    # pygame.mixer.music.load(os.path.join('assets','audios','truebad_end.mp3'))
-    # pygame.mixer.music.set_volume(0.5)
-    # pygame.mixer.music.play()
 
     while True:
         window.fill('black')
 
         render(window)
-        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

@@ -113,8 +113,7 @@ class Trade():
                 self.bet = 0
             else:
                 self.bet = round(self.value/self.price)
-
-    # how tf do you buy and sell with shares
+                
     def buy(self, amt):
         self.share+=amt
         self.prev_value=self.price
