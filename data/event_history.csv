@@ -1,1 +1,6 @@
 day,name,type,probability,decision,message,duration
+4,Market Fall,Economy,100,False,Market price is predicted to fall,10
+5,Company Increases Interest Rates,Economy,50,False,Company has increased its interest rates to attract investors.,84
+15,Market Rise,Economy,100,False,Market price is predicted to rise,10
+19,US Raises Tariffs,Economy,50,False,US Government increases tariffs.,63
+20,Billiards,Regular,100,True,Your friends invite you to billiards.,2

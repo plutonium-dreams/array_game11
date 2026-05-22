@@ -24,7 +24,7 @@ from trade import *
 from market import *
 from event import *
 
-
+''' game initialization '''
 pygame.init()
 
 window = pygame.display.set_mode((scrx, scry))
@@ -91,7 +91,7 @@ def credits(surf,color,end_y):
 
 def shut_down():
     '''
-    Shut Down Functio; for styllistic exit
+    Shut Down Function for styllistic exit
     Description: For a styllistic shutting down of the system
     '''
     dots = ''
@@ -213,7 +213,7 @@ def game():
     SEED = np.random.randint(0,1000000)
     np.random.seed(SEED)
 
-    # print(f'GAME SEED: {SEED}')
+    print(f'GAME SEED: {SEED}')
 
 
     debug_state = False         # ctrl + d
@@ -239,16 +239,13 @@ def game():
             phenomena.day+=1
             occurence = phenomena.select()
             phenomena.update()
-            # print(market.mu, phenomena.market.mu, phenomena.regular_mu)
+            # print(market.mu, phenomena.market.mu, phenomena.regular_mu) # for debug
             updateCSV()
 
         trade.render(window)
         viewport.draw(colors['main'])
         viewport.render(window)
-    
-        # logo drawing on top right
-        # pygame.draw.rect(window, 'red4', pygame.Rect((700, scry/20+15),((scrx-screen_margin)-700,305-(scry/20+15))))
-        # window.blit(text_main.render('LOGO',False,colors['bg']),(((scrx-screen_margin+700)/2,(305)/2)))
+
         
         # time bar
         if not paused:

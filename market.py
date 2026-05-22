@@ -53,12 +53,11 @@ class Season():
         self.period = period
         self.amplitude=amplitude
     def Seasonality_Update(self,time):
+        # handles seasonality for the game
         season_trend=self.amplitude*np.cos((2*np.pi/self.period)*time)
         return season_trend
 
 
-
-# class Event()
 
 
 # Geometric Brownian Motion model
@@ -99,21 +98,7 @@ class Market():
     
     def graph(self):
         plt.plot(self.output*10)
-        # plt.show()
-
-
-# np.random.seed(889571)
-# for j in range(100):
-#     np.random.seed()
-#     market = Market(1000)
-#     for i in range(252):
-#         market.gen_points()
-#     market.graph()
-
-# plt.show()
-
-
-
+        # plt.show()    # uncomment to show the all time market graph
 
 
 

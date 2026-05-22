@@ -1,5 +1,6 @@
 import os
 
+# base for 3d model used in one of the 3 endings
 model = open(os.path.join('assets','3d',f'model.txt'))
 liz = model.readlines()
 vertices = []

@@ -29,7 +29,7 @@ PLAN
     - LEVEL 3
         - war
         - pandemic
-        - cuop
+        - coup
 
 
 '''
@@ -41,6 +41,9 @@ from utils import *
 
 
 class Event():
+    '''
+    Handles event generation, random selection, and execution
+    '''
     def __init__(self, trade, market, newsbox,viewport):
         ''' 
         << Event Documentation here >>>
@@ -51,10 +54,10 @@ class Event():
         End Condition:
         '''
         
-        self.trade = trade  # calls a copy of the trade class instance
-        self.market = market
-        self.newsbox = newsbox
-        self.viewport = viewport
+        self.trade = trade  # assigns the trade class instance (modifies it directly)
+        self.market = market # assigns the market class instance (modifies it directly)
+        self.newsbox = newsbox  # assigns the newsbox class instance (modifies it directly)
+        self.viewport = viewport # assigns the viewport class instance (modifies it directly)
 
         # event entry: [name, type, probability, trigger decision(bool), msg text, duration]
         self.events = np.array([
@@ -82,6 +85,7 @@ class Event():
 
         self.event_list = []
 
+        # default values
         self.weights = 0
         self.day = DAY
         self.end = 0
@@ -155,7 +159,7 @@ class Event():
         if self.trade.balance != money:
             self.sin = True
 
-        ''' ending handling '''
+        ''' ENDING HANDLING '''
         # true bad end
         if self.day > 1260 and self.trade.balance >= 100000 and (self.lock==0 or self.lock==1):
             self.lock = 1
@@ -182,7 +186,7 @@ class Event():
 
     ''' events framework '''
     def invoke(self, num, remaining, decision=None):
-        # print(num)
+        # matches event to its respective index in self.events above
         match num:
             case 0:
                 pass
@@ -223,7 +227,8 @@ class Event():
 
 
     ''' custom events '''
-
+    # events affect default values
+    
     def market_rise(self, remaining):
         ''' 
         Name: Market Rise

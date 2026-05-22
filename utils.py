@@ -39,9 +39,8 @@ f = open(os.path.join('data','event_history.csv'),'w')
 f.write('day,name,type,probability,decision,message,duration\n')
 f.close()
 
-
+# for logging events into a csv file; saving for the log view of the bulletin
 EVENT_HISTORY = pd.read_csv(os.path.join('data','event_history.csv'))
-
 def updateCSV():
     # can optimize this
     EVENT_HISTORY.to_csv(os.path.join('data','event_history.csv'), index=False)
@@ -91,6 +90,9 @@ def show_boundaries(state, window, viewport):
         pass
 
 class Button():
+    '''
+    Handles all button functionality for the game
+    '''
     def __init__(self, pos, size, text, mode):
         '''
         Button Class
@@ -134,6 +136,9 @@ class Button():
                 self.state = False
 
 class TextBox():
+    '''
+    Handles textbox functionality in game
+    '''
     def __init__(self, pos, size):
         self.size = size
         self.pos = np.array(pos)
@@ -155,6 +160,9 @@ class TextBox():
             button.update()
 
 class Window():
+    '''
+    Manages all of the windoes made in game
+    '''
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
@@ -174,6 +182,9 @@ class Window():
     
 
 class NewsBox(TextBox):
+    '''
+    Handles the player's bulletin dashboard for events (event notification and log system)
+    '''
     def __init__(self, pos, size):
         TextBox.__init__(self, pos, size)
         
@@ -196,8 +207,6 @@ class NewsBox(TextBox):
         # decision box initialize
         self.decision = None
         
-
-
     def update(self, evt):
         for button in self.buttons:
             button.update()
@@ -270,8 +279,7 @@ class NewsBox(TextBox):
             window.blit(self.surface, self.pos)
 
             self.button_scrollup.render(window)
-            self.button_scrolldown.render(window)
-            
+            self.button_scrolldown.render(window)            
 
         else:
             # if we are not viewing the logs
@@ -280,21 +288,15 @@ class NewsBox(TextBox):
             
             window.blit(self.surface, self.pos)
 
-
         # decision making
         if self.evnt[3] and self.decision == None and not self.view_log:
             self.button_agree.render(window)
             self.button_disagree.render(window)
             
-
-
-
         # render the buttons
         for button in self.buttons:
             button.render(window)
     
-    def history(self):
-        pass
 
         
         

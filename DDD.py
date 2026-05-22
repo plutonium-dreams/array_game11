@@ -2,6 +2,8 @@
 prototypr idea #1 for math 154 fproj 
 
 source for 3d model: https://github.com/alecjacobson/common-3d-test-models/blob/master/data/rocker-arm.obj
+
+basic 3d simulation based off of Tsoding's video: https://youtu.be/qjWkNZ0SXfo?si=me37YcgSogCkyOhc
 '''
 import pygame, random, os, sys, math
 import numpy as np 
@@ -57,8 +59,6 @@ def rotate_yz(p3d,angle):
     )
     return point_3d
 
-
-
 def line(p1, p2,surf):
     pygame.draw.line(surf, 'white', p1, p2)
 
@@ -69,8 +69,6 @@ rotate = 0.7
 zoom = 1
 def render(surf,zoom,rotate):
     global angle
-    # global zoom
-    # global rotate
     global vertices
     global faces
     global dz
@@ -89,6 +87,7 @@ def render(surf,zoom,rotate):
     return dz
 
 
+# test program for the rendering engine
 def game():
     global dt
     global dz
@@ -162,4 +161,3 @@ def game():
         pygame.display.update()
         pygame.clock.tick(60)
         pygame.display.set_caption(f'DEATH CAPITAL, INC.      |      (FPS):{round(pygame.clock.get_fps())}')
-

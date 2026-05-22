@@ -8,6 +8,9 @@ from defaults import *
 from utils import *
 
 class Trade():
+    '''
+    Handles the trading mechanic of the game
+    '''
     def __init__(self, balance):
         # vars
         self.balance = balance
@@ -75,6 +78,7 @@ class Trade():
 
 
     def update(self, price):
+        # updates the balance of the player
         for button in self.BUTTONS:
             button.update()
 
@@ -114,12 +118,11 @@ class Trade():
             else:
                 self.bet = round(self.value/self.price)
                 
+    # buy and sell class methods, whole number shares only
     def buy(self, amt):
         self.share+=amt
         self.prev_value=self.price
         self.balance-=self.prev_value*amt
-
-
     
     def sell(self, amt):
         self.share-=amt

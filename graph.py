@@ -13,23 +13,24 @@ from utils import *
 from trade import *
 
 class Viewport():
+    '''
+    Handles the graphing and display of the stock price
+    '''
     def __init__(self):
+        # determines where the graph will be displayed on screen, specifically
         self.width, self.height = scrx/2,scry/2
         self.pos=((scrx-self.width)/2-150,scrx*0.1)
         self.surface = pygame.Surface((self.width, self.height))
         
+        # max viewable y values
         self.max_view_height = 10**4
         self.view_height = 2100
 
+        # max viewable x values
         self.max_view_length = 251
         self.view_length = 11
         
-        '''
-        remaining to do for today
-        -   modify max view length to be max 252; adjust the viewport naming for that also
-        -   make the buy/sell system
-        '''
-
+        # default zoom settings
         self.zoom = self.height/self.view_height
         self.interval = 0
         self.total_points = 0
@@ -41,6 +42,7 @@ class Viewport():
         self.processed_vals = 0
 
     def convert_point(self, point):
+        # adjusts the point with respect to the graph attributes    
         if not self.follow:
             mode = self.translation
         else:
@@ -89,14 +91,11 @@ class Viewport():
         surface.blit(y_marker_surface, (self.surface.width+self.pos[0], self.pos[1]-20))
 
         # render the x marker points
-        ''' optimize this josef '''
         
         x_marker_surface = pygame.Surface((scrx/2+50, 50))
         x_marker_surface.fill(colors['bg'])
     
-        for i in range(0, len(self.x_vals), len(self.x_vals)//10):
-            # add a big view / small view approach maybe?            
-
+        for i in range(0, len(self.x_vals), len(self.x_vals)//10):        
             mark = text_viewui.render(f'{self.total_points-i}', False, colors['ui'])
             pos = self.x_vals[-i-1]-mark.size[0]/2+25,10
 
